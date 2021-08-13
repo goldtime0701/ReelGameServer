@@ -16,7 +16,7 @@ namespace ReelServer.Controllers
         [HttpGet("{strCmd}", Name = "Get")]
         public string Get(string strCmd)
         {
-            string strAgentID = string.Empty, strUserID = string.Empty, strUserNick = string.Empty, strFromDate = string.Empty, strToDate = string.Empty, strIP = string.Empty;
+            string strAgentID = string.Empty, strUserID = string.Empty, strUserNick = string.Empty, strUserPW = string.Empty, strFromDate = string.Empty, strToDate = string.Empty, strIP = string.Empty;
             int nCash = 0, nCupn = 0, nDataIndex = 0;
             string strParams = Request.QueryString.Value.Substring(1);
             string[] strParam = strParams.Split('&');
@@ -33,6 +33,8 @@ namespace ReelServer.Controllers
                     strUserID = strValue;
                 else if (strKey == "strUserNick")
                     strUserNick = strValue;
+                else if (strKey == "strUserPW")
+                    strUserPW = strValue;
                 else if (strKey == "strFromDate")
                     strFromDate = strValue;
                 else if (strKey == "strToDate")
@@ -58,7 +60,7 @@ namespace ReelServer.Controllers
 
             if(strCmd == "createPlayer")
             {
-                clsRespnse = CWebEngine.CreatePlayer(clsStore, strUserID, strUserNick);
+                clsRespnse = CWebEngine.CreatePlayer(clsStore, strUserID, strUserNick, strUserPW);
             }
             else if(strCmd == "getToken")
             {

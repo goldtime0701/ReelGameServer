@@ -40,7 +40,8 @@ namespace ReelServer
         public static CUser CheckUserID(CStore clsStore, string strUserID, CWebResponse clsResponse, string strIP="")
         {
             CUser clsUser = null;
-            clsResponse = new CWebResponse();
+            if (clsResponse == null)
+                clsResponse = new CWebResponse();
             
             if(clsStore.m_nDemo == 1)
             {
@@ -84,7 +85,7 @@ namespace ReelServer
             return clsUser;
         }
 
-        public static CWebResponse CreatePlayer(CStore clsStore, string strUserID, string strUserNick)
+        public static CWebResponse CreatePlayer(CStore clsStore, string strUserID, string strUserNick, string strUserPW)
         {
             strUserID = strUserID.Trim();
             strUserNick = strUserNick.Trim();
@@ -92,15 +93,20 @@ namespace ReelServer
 
             CWebResponse clsResponse = new CWebResponse();
 
-            if(strUserID == null || strUserID == string.Empty)
+            if(string.IsNullOrEmpty(strUserID))
             {
                 clsResponse.nCode = 0x01;
                 clsResponse.strData = "유저아이디 누락";
             }
-            else if(strUserNick == null || strUserNick == string.Empty)
+            else if(string.IsNullOrEmpty(strUserNick))
             {
                 clsResponse.nCode = 0x01;
                 clsResponse.strData = "유저닉네임 누락";
+            }
+            else if(string.IsNullOrEmpty(strUserPW))
+            {
+                clsResponse.nCode = 0x01;
+                clsResponse.strData = "유저비번 누락";
             }
             else
             {
@@ -118,8 +124,8 @@ namespace ReelServer
                 else
                 {
                     //디비에 먼저 써야 한다.
-                    string sql = "INSERT INTO tbl_user(userID, userNick, userMail, agenCode, storeCode, userRegTime, userState) ";
-                    sql += "VALUES('" + strPlayerID + "', '" + strUserNick + "', '" + strUserID + "', ";
+                    string sql = "INSERT INTO tbl_user(userID, userNick, userPW, userMail, agenCode, storeCode, userRegTime, userState) ";
+                    sql += "VALUES('" + strPlayerID + "', '" + strUserNick + "', '" + strUserPW + "', '" + strUserID + "', ";
                     sql += "0" + ", " + clsStore.m_nStoreCode + ", '" + CMyTime.GetMyTimeStr() + "', 1)";
                     CUser clsUser = CDataBase.InsertUserToDB(sql, strPlayerID);
 

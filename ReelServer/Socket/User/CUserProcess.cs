@@ -58,7 +58,18 @@ namespace ReelServer
             CLoginPacket clsLoginSendPacket = new CLoginPacket();
 
             CUserInfoC2SPacket clsUserInfo = JsonConvert.DeserializeObject<CUserInfoC2SPacket>(strPktData);
-            CUser clsUser = CGlobal.GetUserByID(clsUserInfo.m_strUserID);
+            CUser clsUser = null;
+            if(string.IsNullOrEmpty(clsUserInfo.m_strUserNick))
+            {
+                clsUser = CGlobal.GetUserByID(clsUserInfo.m_strUserID);
+            }
+            else
+            {
+                CStore clsStore = CGlobal.GetStoreByID(clsUserInfo.m_strUserNick);   //매장회원일때는 가입할때 매장아이디를 함께보내게 된다.
+                clsUser = CWebEngine.CheckUserID(clsStore, clsUserInfo.m_strUserID, null);
+            }
+
+
             if(clsUser == null)
             {
                 clsLoginSendPacket.nCode = CDefine.ERROR_LOGIN_AUTH;
